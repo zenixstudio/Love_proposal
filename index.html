@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>A Special Surprise ❤️</title>
+
+  <!-- EmailJS Library -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: radial-gradient(circle at center, #35091f 0%, #17040d 60%, #0a0105 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow-x: hidden;
+      color: #fff;
+      position: relative;
+      padding: 16px;
+    }
+
+    .bg-heart {
+      position: absolute;
+      color: rgba(255, 75, 125, 0.25);
+      animation: floatUp 7s linear infinite;
+      user-select: none;
+      pointer-events: none;
+    }
+
+    @keyframes floatUp {
+      0% { transform: translateY(105vh) scale(0.6); opacity: 0; }
+      20% { opacity: 0.8; }
+      80% { opacity: 0.8; }
+      100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 24px;
+      padding: 36px 24px;
+      width: 95%;
+      max-width: 380px;
+      text-align: center;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+      position: relative;
+      z-index: 2;
+    }
+
+    .step {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .step.active {
+      display: flex;
+      animation: fadeIn 0.4s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h1, h2 {
+      font-weight: 700;
+      color: #fff;
+    }
+
+    p {
+      color: #ffd1dc;
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    .btn {
+      background: linear-gradient(135deg, #ff4d79, #e6005c);
+      color: #fff;
+      border: none;
+      padding: 12px 28px;
+      font-size: 15px;
+      font-weight: 600;
+      border-radius: 999px;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(230, 0, 92, 0.35);
+      transition: transform 0.15s ease;
+    }
+
+    .btn:active {
+      transform: scale(0.96);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.15);
+      box-shadow: none;
+    }
+
+    .countdown-num {
+      font-size: 72px;
+      font-weight: 800;
+      background: linear-gradient(180deg, #fff, #ff77a9);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .progress-bar-container {
+      width: 100%;
+      height: 10px;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 10px;
+    }
+
+    .progress-bar-fill {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, #ff4d79, #ff85a1);
+      border-radius: 999px;
+      transition: width 0.08s linear;
+    }
+
+    .envelope-icon {
+      font-size: 64px;
+      cursor: pointer;
+      user-select: none;
+      animation: pulse 1.8s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.08); }
+    }
+
+    .btn-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+      align-items: center;
+      justify-content: center;
+      min-height: 120px;
+      position: relative;
+    }
+
+    #noBtn {
+      transition: transform 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .counter-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      width: 100%;
+      margin: 12px 0 16px 0;
+    }
+
+    .counter-box {
+      background: rgba(255, 255, 255, 0.08);
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .counter-val {
+      font-size: 26px;
+      font-weight: 700;
+      color: #ff6699;
+    }
+
+    .counter-lbl {
+      font-size: 11px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      opacity: 0.7;
+    }
+
+    /* Form Styles Added on Last Screen */
+    .form-wrapper {
+      background: rgba(255, 255, 255, 0.06);
+      padding: 16px;
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      width: 100%;
+      margin-top: 10px;
+      text-align: left;
+    }
+
+    .form-title {
+      font-size: 13px;
+      color: #ffd1dc;
+      margin-bottom: 12px;
+      text-align: center;
+      font-weight: 600;
+    }
+
+    .form-group {
+      margin-bottom: 10px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 12px;
+      margin-bottom: 4px;
+      color: #ffccd5;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(0, 0, 0, 0.25);
+      color: #fff;
+      font-size: 14px;
+      outline: none;
+    }
+
+    .form-group input:focus {
+      border-color: #ff4d79;
+    }
+
+    .btn-submit {
+      width: 100%;
+      padding: 10px;
+      font-size: 14px;
+      margin-top: 6px;
+    }
+
+    .status-msg {
+      margin-top: 12px;
+      font-size: 13px;
+      color: #4cd964;
+      font-weight: 600;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="heartsContainer"></div>
+
+  <div class="card">
+    
+    <!-- Step 1: Countdown -->
+    <div class="step active" id="step1">
+      <p>Ek Chhoti Si Baat... 💌</p>
+      <div class="countdown-num" id="countdown">3</div>
+    </div>
+
+    <!-- Step 2: Loader -->
+    <div class="step" id="step2">
+      <p id="loaderStatus">Initializing Love.exe...</p>
+      <div class="progress-bar-container">
+        <div class="progress-bar-fill" id="progressFill"></div>
+      </div>
+      <small id="progressPercent" style="opacity: 0.7;">0%</small>
+    </div>
+
+    <!-- Step 3: Envelope -->
+    <div class="step" id="step3">
+      <p>A letter arrived 💌</p>
+      <div class="envelope-icon" onclick="showStep(4)">✉️</div>
+      <small style="opacity: 0.6;">Tap the envelope to open it</small>
+    </div>
+
+    <!-- Step 4: Slides -->
+    <div class="step" id="step4">
+      <small style="color: #ff6699; text-transform: uppercase; letter-spacing: 1.5px;">For You</small>
+      <h2 id="noteTitle" style="font-size: 20px;">Hey Jaan...</h2>
+      <p id="noteBody" style="min-height: 70px;">
+        Pata hai... Main ye sab normally bol nahi pata... Lekin aaj dil ne kaha risk le le, kyunki kuch log baar baar nahi milte.
+      </p>
+      <button class="btn" onclick="advanceSlide()">Next</button>
+    </div>
+
+    <!-- Step 5: Proposal -->
+    <div class="step" id="step5">
+      <div style="font-size: 44px;">💖</div>
+      <h2>Kya Tum Meri Girlfriend Banogi?</h2>
+      <div class="btn-group">
+        <button class="btn" id="yesBtn" onclick="acceptProposal()" style="width: 170px;">YES</button>
+        <button class="btn btn-secondary" id="noBtn" onmouseover="dodgeNo()" onclick="dodgeNo()" ontouchstart="dodgeNo()" style="width: 170px;">
+          SHAYAD NAHI 🙈
+        </button>
+      </div>
+    </div>
+
+    <!-- Step 6: Acceptance Screen (Live Timer + Details Form) -->
+    <div class="step" id="step6">
+      <h1 style="color: #ff4d79;">Yayyyyyyyy! ❤️</h1>
+      <p style="font-size: 14px; margin-top: -6px;">
+        Officially... Ab tum meri favourite notification ho!
+      </p>
+
+      <!-- Live Counter -->
+      <div class="counter-grid">
+        <div class="counter-box"><div class="counter-val" id="days">0</div><div class="counter-lbl">Days</div></div>
+        <div class="counter-box"><div class="counter-val" id="hours">0</div><div class="counter-lbl">Hours</div></div>
+        <div class="counter-box"><div class="counter-val" id="minutes">0</div><div class="counter-lbl">Minutes</div></div>
+        <div class="counter-box"><div class="counter-val" id="seconds">0</div><div class="counter-lbl">Seconds</div></div>
+      </div>
+
+      <!-- Name & Mobile Number Form -->
+      <div class="form-wrapper" id="formWrapper">
+        <div class="form-title">Apna Naam & Phone Number Likho 💕</div>
+        <form id="contactForm">
+          <div class="form-group">
+            <label for="userName">Name:</label>
+            <input type="text" id="userName" placeholder="Enter your name" required />
+          </div>
+
+          <div class="form-group">
+            <label for="userPhone">Phone Number:</label>
+            <input type="tel" id="userPhone" placeholder="Enter your phone number" required />
+          </div>
+
+          <button type="submit" class="btn btn-submit" id="submitBtn">Send Details 💌</button>
+        </form>
+      </div>
+
+      <div id="statusMsg" class="status-msg" style="display: none;"></div>
+
+      <p style="font-size: 13px; opacity: 0.8; font-style: italic; margin-top: 10px;">
+        Some love stories start with one click.
+      </p>
+    </div>
+
+  </div>
+
+  <script>
+    // --- 1. EmailJS Initialization ---
+    (function() {
+      emailjs.init("gCv5dKZzWOT60yXO_");
+    })();
+
+    // बैकग्राउंड फ्लोटिंग हार्ट्स
+    const heartsContainer = document.getElementById('heartsContainer');
+    const symbols = ['❤️', '💖', '✨', '🌸', '💕'];
+    setInterval(() => {
+      if (!heartsContainer) return;
+      const heart = document.createElement('div');
+      heart.className = 'bg-heart';
+      heart.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+      heart.style.left = Math.random() * 100 + 'vw';
+      heart.style.animationDuration = 5 + Math.random() * 4 + 's';
+      heart.style.fontSize = 14 + Math.random() * 18 + 'px';
+      heartsContainer.appendChild(heart);
+      setTimeout(() => heart.remove(), 7000);
+    }, 400);
+
+    // स्टेप स्विच फंक्शन
+    function showStep(index) {
+      document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+      const active = document.getElementById('step' + index);
+      if (active) active.classList.add('active');
+    }
+
+    // स्टेप 1: काउंटडाउन
+    let count = 3;
+    const countdownEl = document.getElementById('countdown');
+    const countTimer = setInterval(() => {
+      count--;
+      if (count > 0) {
+        countdownEl.textContent = count;
+      } else {
+        clearInterval(countTimer);
+        startLoader();
+      }
+    }, 1000);
+
+    // स्टेप 2: लोडर बार
+    function startLoader() {
+      showStep(2);
+      const fill = document.getElementById('progressFill');
+      const text = document.getElementById('progressPercent');
+      const status = document.getElementById('loaderStatus');
+      let progress = 0;
+
+      const loaderTimer = setInterval(() => {
+        progress += 2;
+        fill.style.width = progress + '%';
+        text.textContent = progress + '%';
+
+        if (progress > 30 && progress <= 60) {
+          status.textContent = "Searching for the prettiest smile...";
+        } else if (progress > 60 && progress < 100) {
+          status.textContent = "Found 1 Result ❤️";
+        } else if (progress >= 100) {
+          clearInterval(loaderTimer);
+          setTimeout(() => showStep(3), 600);
+        }
+      }, 50);
+    }
+
+    // स्टेप 4: नोट्स स्लाइड
+    const notes = [
+      { title: "Jab bhi tum online aati ho...", body: "Mera mood automatically better ho jata hai." },
+      { title: "Tumhare messages...", body: "Mere din ka favourite notification hote hain." },
+      { title: "Honestly...", body: "Tum meri life ki sabse pyari coincidence ho." }
+    ];
+    let noteIdx = 0;
+
+    function advanceSlide() {
+      if (noteIdx < notes.length) {
+        document.getElementById('noteTitle').textContent = notes[noteIdx].title;
+        document.getElementById('noteBody').textContent = notes[noteIdx].body;
+        noteIdx++;
+      } else {
+        showStep(5);
+      }
+    }
+
+    // स्टेप 5: भागने वाला "NO" बटन
+    const noResponses = [
+      "Please Soch Lo ❤️",
+      "Nahi Na? 🥺",
+      "Sure? 🥺",
+      "Ek Baar Aur 😭",
+      "Aise mat karo! 🙈"
+    ];
+    let noClickCount = 0;
+
+    function dodgeNo() {
+      const btn = document.getElementById('noBtn');
+      const maxOffset = 65;
+      const x = (Math.random() - 0.5) * maxOffset * 2;
+      const y = (Math.random() - 0.5) * maxOffset * 2;
+      btn.style.transform = `translate(${x}px, ${y}px)`;
+      btn.textContent = noResponses[noClickCount % noResponses.length];
+      noClickCount++;
+    }
+
+    // स्टेप 6: YES दबाने पर ईमेल भेजना और टाइमर शुरू
+    let startTime;
+    function acceptProposal() {
+      showStep(6);
+      startTime = new Date();
+
+      // पहला ईमेल: YES क्लिक होते ही तुरंत अलर्ट
+      emailjs.send("service_bbcmvan", "template_vl35f2d", {
+        name: "Special Someone",
+        message: "She said YES! ❤️ Waiting for name and phone number...",
+        date: new Date().toLocaleString()
+      }).then(
+        function(response) {
+          console.log("Proposal Accepted notification sent!", response.status);
+        },
+        function(error) {
+          console.log("Failed to send notification...", error);
+        }
+      );
+
+      // लाइव काउंटअप टाइमर
+      setInterval(() => {
+        const diff = Math.floor((new Date() - startTime) / 1000);
+        document.getElementById('days').textContent = Math.floor(diff / 86400);
+        document.getElementById('hours').textContent = Math.floor((diff % 86400) / 3600);
+        document.getElementById('minutes').textContent = Math.floor((diff % 3600) / 60);
+        document.getElementById('seconds').textContent = diff % 60;
+      }, 1000);
+    }
+
+    // स्टेप 7: नाम और मोबाइल नंबर सबमिट होने पर ईमेल भेजना
+    const contactForm = document.getElementById('contactForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const formWrapper = document.getElementById('formWrapper');
+    const statusMsg = document.getElementById('statusMsg');
+
+    contactForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Sending... 💌";
+
+      const name = document.getElementById('userName').value;
+      const phone = document.getElementById('userPhone').value;
+      const currentTime = new Date().toLocaleString();
+
+      emailjs.send("service_bbcmvan", "template_vl35f2d", {
+        name: name,
+        message: `She said YES! ❤️\nName: ${name}\nPhone Number: ${phone}\nSubmitted at: ${currentTime}`,
+        date: currentTime
+      }).then(
+        function() {
+          formWrapper.style.display = 'none';
+          statusMsg.textContent = "Details Sent Successfully! ❤️✨";
+          statusMsg.style.display = 'block';
+        },
+        function(error) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = "Send Details 💌";
+          alert("Error: " + JSON.stringify(error));
+        }
+      );
+    });
+  </script>
+</body>
+</html>
